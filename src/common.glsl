@@ -1,3 +1,7 @@
+#if HAS_MULTISAMPLE
+#extension GL_ARB_texture_multisample : enable
+#extension GL_ARB_sample_shading : enable
+#endif
 
 // MiltonState elements
 uniform vec3 u_background_color;

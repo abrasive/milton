@@ -1,4 +1,10 @@
 
+#if HAS_MULTISAMPLE
+uniform sampler2DMS u_canvas;
+#else
+uniform sampler2D u_canvas;
+#endif
+
 
 // The triangle, in [-1,1].
 uniform vec2 u_pointa;
@@ -11,13 +17,6 @@ uniform float u_angle;
 uniform vec2 u_triangle_point;
 
 uniform vec4 u_colors[5]; // Colors for picker buttons.
-
-#if HAS_MULTISAMPLE
-#extension GL_ARB_texture_multisample : enable
-uniform sampler2DMS u_canvas;
-#else
-uniform sampler2D u_canvas;
-#endif
 
 uniform vec2 u_screen_size;
 

@@ -1,6 +1,5 @@
 
 #if HAS_MULTISAMPLE
-#extension GL_ARB_sample_shading : enable
 uniform sampler2DMS u_canvas;
 #else
 uniform sampler2D u_canvas;
