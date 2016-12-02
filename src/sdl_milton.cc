@@ -267,6 +267,12 @@ MiltonInput sdl_event_loop(MiltonState* milton_state, PlatformState* platform_st
                 {
                     break;
                 }
+                if (event.button.button == 8) {
+                    milton_input.scale += 1;
+                }
+                if (event.button.button == 9) {
+                    milton_input.scale -= 1;
+                }
 
                 if (event.button.button == SDL_BUTTON_LEFT ||
                     event.button.button == SDL_BUTTON_MIDDLE ||
@@ -370,10 +376,9 @@ MiltonInput sdl_event_loop(MiltonState* milton_state, PlatformState* platform_st
                 {
                     break;
                 }
-                if ( !ImGui::GetIO().WantCaptureMouse )
-                {
-                    milton_input.scale += event.wheel.y;
-                }
+                platform_state->pan_point.x += event.wheel.x * 50;
+                platform_state->pan_point.y += event.wheel.y * 50;
+                input_flags |= MiltonInputFlags_PANNING;
 
                 break;
             }
