@@ -564,6 +564,7 @@ typedef struct
     float   Pressure[EASYTAB_PACKETQUEUE_SIZE]; // Range: 0.0f to 1.0f
     int32_t NumPackets;  // Number of PosX, PosY, Pressure elements available in arrays.
     EASYTAB_BOOL PenInProximity;  // EASYTAB_TRUE if pen is in proximity to table. EASYTAB_FALSE otherwise.
+    EASYTAB_BOOL Erasing;   // EASYTAB_TRUE if the eraser is present
 
     int32_t RangeX, RangeY;
     int32_t MaxPressure;
@@ -573,6 +574,7 @@ typedef struct
     uint32_t MotionType;
     XEventClass EventClasses[1024];
     uint32_t NumEventClasses;
+    XID EraserID;
 #endif // __linux__
 
 #ifdef WIN32
@@ -664,6 +666,8 @@ EasyTabResult EasyTab_Load(Display* Disp, Window Win)
     EasyTab = (EasyTabInfo*)calloc(1, sizeof(EasyTabInfo)); // We want init to zero, hence calloc.
     if (!EasyTab) { return EASYTAB_MEMORY_ERROR; }
 
+    EasyTab->EraserID = -1;
+
     int32_t Count;
     XDeviceInfoPtr Devices = (XDeviceInfoPtr)XListInputDevices(Disp, &Count);
     if (!Devices) { return EASYTAB_X11_ERROR; }
@@ -672,6 +676,9 @@ EasyTabResult EasyTab_Load(Display* Disp, Window Win)
     {
         if (!strstr(Devices[i].name, "stylus") &&
             !strstr(Devices[i].name, "eraser")) { continue; }
+
+        if (strstr(Devices[i].name, "eraser"))
+            EasyTab->EraserID = Devices[i].id;
 
         EasyTab->Device = XOpenDevice(Disp, Devices[i].id);
         XAnyClassPtr ClassPtr = Devices[i].inputclassinfo;
@@ -741,6 +748,8 @@ EasyTabResult EasyTab_HandleEvent(XEvent* Event)
     EasyTab->PosX[0]     = MotionEvent->x;
     EasyTab->PosY[0]     = MotionEvent->y;
     EasyTab->Pressure[0] = (float)MotionEvent->axis_data[2] / (float)EasyTab->MaxPressure;
+    EasyTab->Erasing = MotionEvent->deviceid == EasyTab->EraserID ? EASYTAB_TRUE : EASYTAB_FALSE;
+
     return EASYTAB_OK;
 }
 
