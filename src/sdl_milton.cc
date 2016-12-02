@@ -212,6 +212,16 @@ MiltonInput sdl_event_loop(MiltonState* milton_state, PlatformState* platform_st
                 }
                 if (er == EASYTAB_OK)
                 {
+                    if (EasyTab->Erasing != platform_state->is_eraser_near) {
+                        if (EasyTab->Erasing)
+                            milton_input.mode_to_set = MiltonMode_ERASER;
+                        else
+                            milton_input.mode_to_set = MiltonMode_PEN;
+
+                        input_flags |= MiltonInputFlags_CHANGE_MODE;
+                        platform_state->is_eraser_near = EasyTab->Erasing;
+                    }
+
                     b32 got_pen = false;
                     // Pen in use but not drawing
                     b32 was_pen_down = EasyTab->PenInProximity && !platform_state->is_pointer_down;

@@ -70,6 +70,8 @@ struct PlatformState
     b32 is_pointer_down;
     b32 is_middle_button_down;
 
+    b32 is_eraser_near;
+
     b32 is_panning;
     b32 waiting_for_pan_input; // Start panning from GUI menu.
 
